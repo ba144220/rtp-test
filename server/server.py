@@ -69,6 +69,9 @@ if __name__ == "__main__":
             print('Sending frame: ', i , ' size: ',sys.getsizeof(outdata))
 
             #outdata = 'echo ' + indata.decode()
-            rtpSocket.sendto(outdata, addr)
+            rtpPacket = rtp_packet()
+            rtpPacket.encode(2,0,0,0,0,0,i,0,outdata)
+
+            rtpSocket.sendto(rtpPacket.getPacket(), addr)
             time.sleep(0.033)
            

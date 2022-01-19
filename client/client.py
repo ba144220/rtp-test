@@ -1,23 +1,15 @@
-import sys, traceback, threading, socket, os, time
-sys.path.insert(1, '/Users/yuchihsu/Desktop/NTU/110-1/電腦網路導論/final project/cn-final-proj/utils')
+import sys
+import os
+import time
+
 import numpy as np
 import cv2
 
 import socket
-# def colored(r, g, b, text):
-#     return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r, g, b, text)
 
-# def plot(data, h, w):
-#     os.system('cls' if os.name == 'nt' else 'clear')
+sys.path.insert(1, '/Users/yuchihsu/Desktop/NTU/110-1/電腦網路導論/final project/Tests/rtp_test/utils')
+from rtp_packet import rtp_packet
 
-   
-#     display = ' .,-~+=<#&%$@'
-#     for i in range(0,h):
-#         for j in range(0,w):
-#             # val = int(data[i][j]//20)
-#             coloredText = colored(data[i][j][0], data[i][j][1], data[i][j][2], '@')
-#             print(coloredText, end='')
-#         print()
 
 def decodeJpeg(data):
     data = np.frombuffer(data, dtype=np.uint8)
@@ -40,19 +32,23 @@ if __name__ == "__main__":
         outdata = input('please input message: ')
         print('sendto ' + str(server_addr) + ': ' + outdata)
         rtpSocket.sendto(outdata.encode(), server_addr)
-        fc = 0
         while True:
         
             indata, addr = rtpSocket.recvfrom(65536)
-            print('receive: ',fc)
-            frame = decodeJpeg(indata)
+            
+            rtpPacket = rtp_packet()
+            rtpPacket.decode(indata)
+            frame = decodeJpeg(rtpPacket.getPayload())
+
+            print('receive: ', rtpPacket.getSequenceNumber())
+            #frame = decodeJpeg(indata)
             cv2.imshow('My Video', frame)
             if cv2.waitKey(25) == ord('q'):
                 # do not close window, you want to show the frame
                 # cv2.destroyAllWindows();
                 break
         
-            fc+=1
+
 
 
 
