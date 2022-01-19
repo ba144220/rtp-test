@@ -2,7 +2,7 @@ from PIL import Image
 import io, sys
 
 
-fileName = 'videos/video.mjpeg'
+fileName = 'videos/test_40_71.mjpeg'
 
 
 try:
